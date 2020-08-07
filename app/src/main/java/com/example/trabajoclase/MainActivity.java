@@ -10,10 +10,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ImageView imageView;
+    boolean estadoBooleanOrigen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +87,19 @@ public class MainActivity extends AppCompatActivity {
     }
     public void BajarDoc(View view){
 
-        int SELECCIONAR_DIRECTORIO_ORIGEN = 1;
+        estadoBooleanOrigen = true;
+        Intent intent = new Intent("com.sec.android.app.myfiles.PICK_DATA");
+        intent.putExtra("CONTENT_TYPE", "*/*");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        startActivityForResult(intent, RESULT_OK);
+        Log.i("Hola", "Hola2");
+
+        /*
+        int SELECCIONAR_DIRECTORIO_ORIGEN = 0;
         Intent intentOrigen = new Intent(Intent.ACTION_GET_CONTENT);
-        intentOrigen.setType("*/storage");
-        startActivityForResult(intentOrigen, SELECCIONAR_DIRECTORIO_ORIGEN);
-        boolean estadoBooleanOrigen = true;
+        Uri uri = Uri.parse(Environment.getStorageDirectory().getPath());
+        intentOrigen.setDataAndType(uri, "");
+        startActivity(Intent.createChooser(intentOrigen, "Open folder"));*/
         String url = "https://www.uteq.edu.ec/revistacyt/archivositio/instrucciones_arbitros.pdf";
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         request.setDescription("PDF");
@@ -128,13 +139,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+
+                String rutaOrigen = data.getData().getPath();
+                Log.i("Hola", rutaOrigen); // este ya me pone la ruta en el EditText, con nombre de archivo y extensión incluido
+
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             imageView.setImageBitmap(imageBitmap);
         }
+        }
     }
-
 
 
 }
