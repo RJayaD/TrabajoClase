@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         permisos.add(Manifest.permission.WRITE_CALENDAR);
         getPermission(permisos);
         imageView = (ImageView) findViewById(R.id.foto);
+
+
     }
 
     public void getPermission(ArrayList<String> permisosSolicitados){
@@ -81,6 +83,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void BajarDoc(View view){
+
+        int SELECCIONAR_DIRECTORIO_ORIGEN = 1;
+        Intent intentOrigen = new Intent(Intent.ACTION_GET_CONTENT);
+        intentOrigen.setType("*/storage");
+        startActivityForResult(intentOrigen, SELECCIONAR_DIRECTORIO_ORIGEN);
+        boolean estadoBooleanOrigen = true;
         String url = "https://www.uteq.edu.ec/revistacyt/archivositio/instrucciones_arbitros.pdf";
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         request.setDescription("PDF");
